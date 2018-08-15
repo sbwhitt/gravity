@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">gravity</string>
+    <string name="gravity_arrow">arrow</string>
+    <string name="play_text">play</string>
+    <string name="restart_text">restart</string>
+    <string name="quit_text">quit</string>
+    <string name="fail_text">game over</string>
+    <string name="pause_button">pause</string>
+    <string name="scoreText">score</string>
+    <string name="levelText">level</string>
+    <string name="highScoreText">highScore</string>
+    <string name="expText">experience</string>
+    <string name="exp_text">experience</string>
+    <string name="high_score_text">high score</string>
+    <string name="choose_power">power</string>
+    <string name="obs_speed">speed</string>
+    <string name="mode_text">mode</string>
+    <string name="home_text">home</string>
+</resources>
