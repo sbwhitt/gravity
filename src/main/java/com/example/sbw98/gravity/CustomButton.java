@@ -13,6 +13,10 @@ public class CustomButton {
 
     float width;
     float height;
+
+    float x;
+    float y;
+
     Bitmap background;
 
     public CustomButton(Bitmap background) {
@@ -31,6 +35,9 @@ public class CustomButton {
     }
 
     public void setPosition(float x, float y) {
+        this.x = x;
+        this.y = y;
+
         buttonMatrix.setTranslate(x, y);
         buttonMatrix.mapRect(buttonRect);
     }
@@ -44,5 +51,13 @@ public class CustomButton {
 
     public void drawRect(Canvas canvas, Paint paint) {
         canvas.drawRect(buttonRect, paint);
+    }
+
+    public float getX() {
+        return x;
+    }
+
+    public float getY() {
+        return y;
     }
 }

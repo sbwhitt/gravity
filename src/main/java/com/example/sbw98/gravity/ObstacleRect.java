@@ -96,4 +96,16 @@ public class ObstacleRect {
     public Rect getHitBox() {
         return hitBox;
     }
+
+    public void placeTop() {
+        setPosition((int)(screenWidth), 0);
+    }
+
+    public void placeBottom() {
+        setPosition((int)(screenWidth), (int)(screenHeight-height));
+    }
+
+    public void placeMiddle() {
+        setPosition((int)(screenWidth), (int)(screenHeight/2-height/2));
+    }
 }

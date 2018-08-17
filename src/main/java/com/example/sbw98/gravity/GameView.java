@@ -25,7 +25,9 @@ public class GameView extends SurfaceView implements Runnable, View.OnClickListe
     private boolean paused = false;
     private boolean gameStart = false;
 
-    private Intent intent;
+    private Intent homeIntent;
+    private Intent gameIntent;
+    private Intent endIntent;
     private Thread gameThread = null;
 
     private Player player;
@@ -68,6 +70,11 @@ public class GameView extends SurfaceView implements Runnable, View.OnClickListe
     private String speedStr;
     private String scoreStr;
 
+    private CustomButton quitButton;
+    private CustomButton restartButton;
+    private String quitStr;
+    private String restartStr;
+
     private Power power;
     private Mode mode;
     private String currentPowerStr;
@@ -78,6 +85,7 @@ public class GameView extends SurfaceView implements Runnable, View.OnClickListe
     private Paint largeTextPaint;
     private Paint startPaint;
     private Paint powerPaint;
+    private Paint blackTextPaint;
     private Canvas canvas;
     private SurfaceHolder surfaceHolder;
 
@@ -112,7 +120,9 @@ public class GameView extends SurfaceView implements Runnable, View.OnClickListe
     }
 
     private void init(Context context) {
-        intent = new Intent(context, EndActivity.class);
+        homeIntent = new Intent(context, MainActivity.class);
+        gameIntent = new Intent(context, GameActivity.class);
+        endIntent = new Intent(context, EndActivity.class);
 
         player = new Player(context);
         playerBitmap = player.getBitmap();
@@ -185,6 +195,10 @@ public class GameView extends SurfaceView implements Runnable, View.OnClickListe
         textPaint.setColor(Color.WHITE);
         textPaint.setTextSize(40);
 
+        blackTextPaint = new Paint();
+        blackTextPaint.setColor(Color.BLACK);
+        blackTextPaint.setTextSize(40);
+
         largeTextPaint = new Paint();
         largeTextPaint.setColor(Color.WHITE);
         largeTextPaint.setTextSize(80);
@@ -195,6 +209,11 @@ public class GameView extends SurfaceView implements Runnable, View.OnClickListe
 
         powerButton = new CustomButton(128, 128);
         powerButton.setPosition(32, getScreenHeight()/2 - 64);
+
+        quitButton = new CustomButton(256, 128);
+        quitButton.setPosition(getScreenWidth()/2-largeTextPaint.getTextSize()*4, getScreenHeight()/2+128);
+        restartButton = new CustomButton(256, 128);
+        restartButton.setPosition(getScreenWidth()/2+largeTextPaint.getTextSize()*2, getScreenHeight()/2+128);
     }
 
     @Override
@@ -215,8 +234,9 @@ public class GameView extends SurfaceView implements Runnable, View.OnClickListe
                 }
             }
         }
-        if (!gameOver & mode == Mode.SURVIVAL) drawSurvival();
-        else if (!gameOver & mode == Mode.SURVIVAL) drawPoints();
+        if (!gameOver && mode == Mode.POINTS) drawPoints();
+        else if (!gameOver && mode == Mode.SURVIVAL) drawSurvival();
+        //else if (!gameOver && mode == Mode.SURVIVAL) drawPoints();
     }
 
     ///////////////////////////////////////////
@@ -439,6 +459,9 @@ public class GameView extends SurfaceView implements Runnable, View.OnClickListe
     /////////////////////////////////
     private void drawSurvival() {
         pauseStr = "paused";
+        quitStr = "quit";
+        restartStr = "restart";
+
         speedStr = "speed: " + String.valueOf(obstacleWave[0].getSpeed_x());
         scoreStr = "score: " + String.valueOf(score);
         currentPowerStr = "current power: " + power.name();
@@ -485,9 +508,14 @@ public class GameView extends SurfaceView implements Runnable, View.OnClickListe
             canvas.drawText(currentModeStr, getScreenWidth()/2-48, 96, textPaint);
             canvas.drawText(speedStr, getScreenWidth()-256, getScreenHeight()-48, textPaint);
             canvas.drawText(scoreStr, getScreenWidth()-256, getScreenHeight()-128, textPaint);
-            if (!playing) {
+            if (paused) {
                 canvas.drawText(pauseStr, getScreenWidth()/2-largeTextPaint.getTextSize(), getScreenHeight()/2, largeTextPaint);
                 pauseButton.setBackground(playBitmap);
+
+                quitButton.drawRect(canvas, textPaint);
+                canvas.drawText(quitStr, quitButton.getX()+quitButton.width/2, quitButton.getY()+quitButton.height/2, blackTextPaint);
+                restartButton.drawRect(canvas, textPaint);
+                canvas.drawText(restartStr, restartButton.getX()+restartButton.width/2, restartButton.getY()+restartButton.height/2, blackTextPaint);
             }
             else pauseButton.setBackground(pauseBitmap);
             pauseButton.drawBitmap(canvas);
@@ -520,6 +548,9 @@ public class GameView extends SurfaceView implements Runnable, View.OnClickListe
     ///////////////////////////////
     private void drawPoints() {
         pauseStr = "paused";
+        quitStr = "quit";
+        restartStr = "restart";
+
         speedStr = "speed: " + String.valueOf(checkpoints[0].getSpeed_x());
         scoreStr = "score: " + String.valueOf(score);
         currentPowerStr = "current power: " + power.name();
@@ -547,9 +578,14 @@ public class GameView extends SurfaceView implements Runnable, View.OnClickListe
             canvas.drawText(pointsTimerStr, getScreenWidth()/2-48, 144, textPaint);
             canvas.drawText(speedStr, getScreenWidth()-256, getScreenHeight()-48, textPaint);
             canvas.drawText(scoreStr, getScreenWidth()-256, getScreenHeight()-128, textPaint);
-            if (!playing) {
+            if (paused) {
                 canvas.drawText(pauseStr, getScreenWidth()/2-largeTextPaint.getTextSize(), getScreenHeight()/2, largeTextPaint);
                 pauseButton.setBackground(playBitmap);
+
+                quitButton.drawRect(canvas, textPaint);
+                canvas.drawText(quitStr, quitButton.getX()+quitButton.width/2, quitButton.getY()+quitButton.height/2, blackTextPaint);
+                restartButton.drawRect(canvas, textPaint);
+                canvas.drawText(restartStr, restartButton.getX()+restartButton.width/2, restartButton.getY()+restartButton.height/2, blackTextPaint);
             }
             else pauseButton.setBackground(pauseBitmap);
             pauseButton.drawBitmap(canvas);
@@ -566,7 +602,7 @@ public class GameView extends SurfaceView implements Runnable, View.OnClickListe
 
     private void control() {
         try {
-            gameThread.sleep(17);
+            gameThread.sleep(8);
         }
         catch(InterruptedException e) {
             e.printStackTrace();
@@ -624,9 +660,9 @@ public class GameView extends SurfaceView implements Runnable, View.OnClickListe
         //String timeUp = "time's up";
         //String fail = "you failed";
         gameOver = true;
-        intent.putExtra("final score", score);
-        getContext().startActivity(intent);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        endIntent.putExtra("final score", score);
+        getContext().startActivity(endIntent);
+        endIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         /*pauseBitmap.recycle();
         gravArrow.recycle();
         player.getBitmap().recycle();
@@ -680,6 +716,19 @@ public class GameView extends SurfaceView implements Runnable, View.OnClickListe
                             player.switchGravity();
                             if (player.getGravity() > 0) gravArrow = BitmapFactory.decodeResource(getResources(), R.drawable.arrowdown);
                             else gravArrow = BitmapFactory.decodeResource(getResources(), R.drawable.arrowup);
+                        }
+                    }
+
+                    else if (paused & gameStart) {
+                        if (quitButton.buttonRect.contains(x, y)) {
+                            gameOver = true;
+                            getContext().startActivity(homeIntent);
+                            homeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        }
+                        else if (restartButton.buttonRect.contains(x, y)) {
+                            gameOver = true;
+                            getContext().startActivity(gameIntent);
+                            gameIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         }
                     }
                 }
