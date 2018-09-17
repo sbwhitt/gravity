@@ -25,7 +25,7 @@ public class Player {
     private Path playerPath = new Path();
 
     public Player(Context context) {
-        gravity = 0.2;
+        gravity = 0.15;
         x = screenHeight / 3;
         if (screenHeight < screenWidth) y = screenHeight/2;
         else if (screenWidth < screenHeight) y = screenWidth/2;

@@ -378,9 +378,9 @@ public class GameView extends SurfaceView implements Runnable, View.OnClickListe
         //INCREASING SPEED AND GRAVITY BASED ON SCORE
         if (score != 0 && score % 500 == 0 && !speedAdjusted) {
             speedAdjusted = true;
-            for (int i = 0; i < waves.length; i++) {
-                for (int j = 0; j < waves[i].length; j++) {
-                    waves[i][j].setSpeed_x(waves[i][j].getSpeed_x() + 1);
+            for (Obstacle[] obstacleWave : waves) {
+                for (int j = 0; j < obstacleWave.length; j++) {
+                    obstacleWave[j].setSpeed_x(obstacleWave[j].getSpeed_x() + 1);
                 }
             }
             //player.setGravity(player.getGravity() + 0.06);
