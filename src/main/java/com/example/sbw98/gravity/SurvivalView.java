@@ -18,7 +18,7 @@ import android.view.View;
 
 import java.util.Random;
 
-public class GameView extends SurfaceView implements Runnable, View.OnClickListener {
+public class SurvivalView extends SurfaceView implements Runnable, View.OnClickListener {
     volatile boolean playing;
     private boolean gameOver = false;
     private boolean touch;
@@ -104,17 +104,17 @@ public class GameView extends SurfaceView implements Runnable, View.OnClickListe
     private int pointsTimer = 1800;
     private String pointsTimerStr;
 
-    public GameView(Context context) {
+    public SurvivalView(Context context) {
         super(context);
         init(context);
     }
 
-    public GameView(Context context, AttributeSet attrs) {
+    public SurvivalView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
 
-    public GameView(Context context, AttributeSet attrs, int defStyle) {
+    public SurvivalView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init(context);
     }
@@ -135,51 +135,41 @@ public class GameView extends SurfaceView implements Runnable, View.OnClickListe
 
         startMark = new Landmark(getScreenHeight(), 32);
 
-        if (mode == Mode.SURVIVAL) {
-            obstacleWave = new Obstacle[obstacleWaveNum];
-            for (int i = 0; i < obstacleWaveNum; i++) {
-                obstacleWave[i] = new Obstacle(context, (int) (getScreenWidth()), 8, 1);
-            }
-            mark1 = new Landmark(obstacleWave[0].getX() + obstacleWave[0].getBitmap().getWidth() - 1, 1);
-
-            Obstacle baseOb = obstacleWave[0];
-            int obsWidth = baseOb.getBitmap().getWidth();
-
-            obstacleWave2 = new Obstacle[obstacleWave2Num];
-            for (int i = 0; i < obstacleWave2Num; i++) {
-                obstacleWave2[i] = new Obstacle(context, (int) (getScreenWidth() + obsWidth * 3), 8, -1);
-            }
-            mark2 = new Landmark(obstacleWave2[0].getX() + obstacleWave2[0].getBitmap().getWidth() - 1, 1);
-
-            obstacleWave3 = new Obstacle[obstacleWave3Num];
-            for (int i = 0; i < obstacleWave3Num; i++) {
-                obstacleWave3[i] = new Obstacle(context, (int) (getScreenWidth() + obsWidth * 6), 8, 1);
-            }
-            mark3 = new Landmark(obstacleWave3[0].getX() + obstacleWave3[0].getBitmap().getWidth() - 1, 1);
-
-            obstacleWave4 = new Obstacle[obstacleWave4Num];
-            for (int i = 0; i < obstacleWave4Num; i++) {
-                obstacleWave4[i] = new Obstacle(context, (int) (getScreenWidth() + obsWidth * 9), 8, -1);
-            }
-            mark4 = new Landmark(obstacleWave4[0].getX() + obstacleWave4[0].getBitmap().getWidth() - 1, 1);
-
-            waves[0] = obstacleWave;
-            waves[1] = obstacleWave2;
-            waves[2] = obstacleWave3;
-            waves[3] = obstacleWave4;
-            landmarks[0] = mark1;
-            landmarks[1] = mark2;
-            landmarks[2] = mark3;
-            landmarks[3] = mark4;
+        obstacleWave = new Obstacle[obstacleWaveNum];
+        for (int i = 0; i < obstacleWaveNum; i++) {
+            obstacleWave[i] = new Obstacle(context, (int) (getScreenWidth()), 8, 1);
         }
+        mark1 = new Landmark(obstacleWave[0].getX() + obstacleWave[0].getBitmap().getWidth() - 1, 1);
 
-        else if (mode == Mode.POINTS) {
-            power = Power.gravOff;
-            checkpoints = new Checkpoint[checkpointWaveNum];
-            for (int i = 0; i < checkpointWaveNum; i++) {
-                checkpoints[i] = new Checkpoint(context, (int) getScreenWidth() + i*256, 8, 0);
-            }
+        Obstacle baseOb = obstacleWave[0];
+        int obsWidth = baseOb.getBitmap().getWidth();
+
+        obstacleWave2 = new Obstacle[obstacleWave2Num];
+        for (int i = 0; i < obstacleWave2Num; i++) {
+            obstacleWave2[i] = new Obstacle(context, (int) (getScreenWidth() + obsWidth * 3), 8, -1);
         }
+        mark2 = new Landmark(obstacleWave2[0].getX() + obstacleWave2[0].getBitmap().getWidth() - 1, 1);
+
+        obstacleWave3 = new Obstacle[obstacleWave3Num];
+        for (int i = 0; i < obstacleWave3Num; i++) {
+            obstacleWave3[i] = new Obstacle(context, (int) (getScreenWidth() + obsWidth * 6), 8, 1);
+        }
+        mark3 = new Landmark(obstacleWave3[0].getX() + obstacleWave3[0].getBitmap().getWidth() - 1, 1);
+
+        obstacleWave4 = new Obstacle[obstacleWave4Num];
+        for (int i = 0; i < obstacleWave4Num; i++) {
+            obstacleWave4[i] = new Obstacle(context, (int) (getScreenWidth() + obsWidth * 9), 8, -1);
+        }
+        mark4 = new Landmark(obstacleWave4[0].getX() + obstacleWave4[0].getBitmap().getWidth() - 1, 1);
+
+        waves[0] = obstacleWave;
+        waves[1] = obstacleWave2;
+        waves[2] = obstacleWave3;
+        waves[3] = obstacleWave4;
+        landmarks[0] = mark1;
+        landmarks[1] = mark2;
+        landmarks[2] = mark3;
+        landmarks[3] = mark4;
 
         gravArrow = BitmapFactory.decodeResource(context.getResources(), R.drawable.arrowdown);
         pauseBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.pause);
@@ -219,30 +209,20 @@ public class GameView extends SurfaceView implements Runnable, View.OnClickListe
     @Override
     public void run() {
         while(playing) {
-            if (mode == Mode.SURVIVAL) {
-                updateSurvival();
-                if (!gameOver) {
-                    drawSurvival();
-                    control();
-                }
-            }
-            if (mode == Mode.POINTS) {
-                updatePoints();
-                if (!gameOver) {
-                    drawPoints();
-                    control();
-                }
+            update();
+            if (!gameOver) {
+                draw();
+                control();
             }
         }
-        if (!gameOver && mode == Mode.POINTS) drawPoints();
-        else if (!gameOver && mode == Mode.SURVIVAL) drawSurvival();
+        if (!gameOver) draw();
         //else if (!gameOver && mode == Mode.SURVIVAL) drawPoints();
     }
 
     ///////////////////////////////////////////
     //    //UPDATE FUNCTION FOR SURVIVAL MODE//
     ///////////////////////////////////////////
-    private void updateSurvival() {
+    private void update() {
         int passScore = 50;
         int obsWidth = obstacleWave[0].getBitmap().getWidth();
 
@@ -391,73 +371,10 @@ public class GameView extends SurfaceView implements Runnable, View.OnClickListe
         //END
     }
 
-    ///////////////////////////////////////////
-    //    //UPDATE FUNCTION FOR POINTS MODE////
-    ///////////////////////////////////////////
-    private void updatePoints() {
-        int checkpointScore = 50;
-        int checkpointWidth = checkpoints[0].getBitmap().getWidth();
-
-        //updating player and checking for ceiling and floor collision
-        player.update();
-
-        if (player.getY() > getScreenHeight()-72 & gameStart & !speedSwitched) {
-            //endGame();
-            player.setY(player.getY()-8);
-            player.setSpeed_y(-player.getSpeed_y()/2);
-            speedSwitched = true;
-        }
-        else if (player.getY() < 8 & gameStart & !speedSwitched) {
-            //endGame();
-            player.setY(player.getY()+8);
-            player.setSpeed_y(-player.getSpeed_y()/2);
-            speedSwitched = true;
-        }
-        else if (player.getY() < getScreenHeight()-96 || player.getY() > 24) speedSwitched = false;
-        //System.out.println(player.getSpeed_y());
-        //end
-
-        if (startMark.getStart() >= -32) {
-            startMark.update(startMark.getStart()-8, 32);
-        }
-        if (startMark.getRect().intersect(player.getHitbox())) {
-            gameStart = true;
-            player.toggleGravityOn();
-        }
-
-        //UPDATING CHECKPOINT LOCATIONS AND CHECKING FOR COLLISION
-        for (int i = 0; i < checkpointWaveNum; i++) {
-            checkpoints[i].update();
-            if (checkpoints[i].getX() <= 0) {
-                checkpoints[i].setX(getScreenWidth() + checkpointWidth*i);
-                checkpoints[i].setY(ran.nextInt(getScreenHeight()-256)+128);
-            }
-
-            if (Rect.intersects(player.getHitbox(), checkpoints[i].getHitbox()) && !hit[i]) {
-                score += checkpointScore;
-                hit[i] = true;
-            }
-            else if (!Rect.intersects(player.getHitbox(), checkpoints[i].getHitbox())) hit[i] = false;
-        }
-        //END
-
-        //INCREASING SPEED BASED ON SCORE
-        if (score != 0 && score % 200 == 0 && !speedAdjusted) {
-            speedAdjusted = true;
-            for (int i = 0; i < checkpointWaveNum; i++) {
-                checkpoints[i].setSpeed_x(checkpoints[i].getSpeed_x() + 1);
-            }
-        }
-        else if (score % 200 != 0 & speedAdjusted) {
-            speedAdjusted = false;
-        }
-        //END
-    }
-
     /////////////////////////////////
     //DRAW FUNCTION FOR SURVIVAL MODE
     /////////////////////////////////
-    private void drawSurvival() {
+    private void draw() {
         pauseStr = "paused";
         quitStr = "quit";
         restartStr = "restart";
@@ -539,63 +456,6 @@ public class GameView extends SurfaceView implements Runnable, View.OnClickListe
                     cooldown = false;
                 }
             }
-            surfaceHolder.unlockCanvasAndPost(canvas);
-        }
-    }
-
-    ///////////////////////////////
-    //DRAW FUNCTION FOR POINTS MODE
-    ///////////////////////////////
-    private void drawPoints() {
-        pauseStr = "paused";
-        quitStr = "quit";
-        restartStr = "restart";
-
-        speedStr = "speed: " + String.valueOf(checkpoints[0].getSpeed_x());
-        scoreStr = "score: " + String.valueOf(score);
-        currentPowerStr = "current power: " + power.name();
-        currentModeStr = "current mode: " + mode.name();
-        pointsTimerStr = "time left: " + String.valueOf((int)Math.ceil(pointsTimer/60+1));
-
-        if (cooldown || !player.getGravStatus()) powerPaint.setColor(Color.GRAY);
-        else powerPaint.setColor(Color.WHITE);
-
-        if (surfaceHolder.getSurface().isValid()) {
-            canvas = surfaceHolder.lockCanvas();
-            canvas.drawColor(Color.BLACK);
-
-            canvas.drawBitmap(player.getBitmap(), player.getX(), player.getY(), paint);
-
-            canvas.drawRect(startMark.getRect(), startPaint);
-
-            for (int i = 0; i < checkpointWaveNum; i++) {
-                canvas.drawBitmap(checkpoints[i].getBitmap(), checkpoints[i].getX(), checkpoints[i].getY(), paint);
-            }
-
-            canvas.drawBitmap(gravArrow, getScreenWidth()-196, 32, paint);
-            canvas.drawText(currentPowerStr, getScreenWidth()/2-48, 48, textPaint);
-            canvas.drawText(currentModeStr, getScreenWidth()/2-48, 96, textPaint);
-            canvas.drawText(pointsTimerStr, getScreenWidth()/2-48, 144, textPaint);
-            canvas.drawText(speedStr, getScreenWidth()-256, getScreenHeight()-48, textPaint);
-            canvas.drawText(scoreStr, getScreenWidth()-256, getScreenHeight()-128, textPaint);
-            if (paused) {
-                canvas.drawText(pauseStr, getScreenWidth()/2-largeTextPaint.getTextSize(), getScreenHeight()/2, largeTextPaint);
-                pauseButton.setBackground(playBitmap);
-
-                quitButton.drawRect(canvas, textPaint);
-                canvas.drawText(quitStr, quitButton.getX()+quitButton.width/2, quitButton.getY()+quitButton.height/2, blackTextPaint);
-                restartButton.drawRect(canvas, textPaint);
-                canvas.drawText(restartStr, restartButton.getX()+restartButton.width/2, restartButton.getY()+restartButton.height/2, blackTextPaint);
-            }
-            else pauseButton.setBackground(pauseBitmap);
-            pauseButton.drawBitmap(canvas);
-
-            if (gameStart) pointsTimer -= 1;
-            if (pointsTimer == -1) {
-                endGame();
-            }
-            powerButton.drawRect(canvas, powerPaint);
-
             surfaceHolder.unlockCanvasAndPost(canvas);
         }
     }

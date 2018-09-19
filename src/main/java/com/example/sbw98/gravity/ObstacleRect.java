@@ -4,10 +4,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.RectF;
 
 import java.util.Random;
 
@@ -22,8 +20,8 @@ public class ObstacleRect {
     private int width;
     private int height;
 
-    private int screenHeight = GameView.getScreenHeight();
-    private int screenWidth = GameView.getScreenWidth();
+    private int screenHeight = SurvivalView.getScreenHeight();
+    private int screenWidth = SurvivalView.getScreenWidth();
 
     private int speedX;
 

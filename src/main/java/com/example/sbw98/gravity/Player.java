@@ -14,8 +14,8 @@ public class Player {
     private int x;
     private int y;
 
-    private int screenHeight = GameView.getScreenHeight();
-    private int screenWidth = GameView.getScreenWidth();
+    private int screenHeight = SurvivalView.getScreenHeight();
+    private int screenWidth = SurvivalView.getScreenWidth();
 
     private double speed_x;
     private double speed_y;
@@ -46,22 +46,6 @@ public class Player {
         hitBox.top = y;
         hitBox.right = x + bitmap.getWidth();
         hitBox.bottom = y + bitmap.getHeight();
-    }
-
-    public void moveUp() {
-
-    }
-
-    public void moveDown() {
-
-    }
-
-    public void moveRight() {
-
-    }
-
-    public void moveLeft() {
-
     }
 
     public void addToPath(int px, int py) {

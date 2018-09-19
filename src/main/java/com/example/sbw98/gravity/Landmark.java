@@ -8,7 +8,7 @@ public class Landmark {
     private int start;
     private int y = 0;
 
-    private int screenHeight = GameView.getScreenHeight();
+    private int screenHeight = SurvivalView.getScreenHeight();
 
     public Landmark(int start, int end) {
         this.start = start;

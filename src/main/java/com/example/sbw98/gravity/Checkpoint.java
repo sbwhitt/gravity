@@ -16,8 +16,8 @@ public class Checkpoint {
     private int x;
     private int y;
 
-    private int screenHeight = GameView.getScreenHeight();
-    private int screenWidth = GameView.getScreenWidth();
+    private int screenHeight = SurvivalView.getScreenHeight();
+    private int screenWidth = SurvivalView.getScreenWidth();
 
     private int speed_x;
     private int speed_y;
