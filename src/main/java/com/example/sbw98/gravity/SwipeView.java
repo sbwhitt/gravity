@@ -32,11 +32,11 @@ public class SwipeView extends SurfaceView implements Runnable, View.OnClickList
     private final int numObstacles = 6;
     private ObstacleRect[] obstacles;
 
-    private Landmark mark1;
-    private Landmark mark2;
-    private Landmark mark3;
+    //private Landmark mark1;
+    //private Landmark mark2;
+    //private Landmark mark3;
 
-    private boolean[] passed = {false, false, false};
+    //private boolean[] passed = {false, false, false};
 
     private int obWidth;
     private int obHeight;
@@ -61,8 +61,9 @@ public class SwipeView extends SurfaceView implements Runnable, View.OnClickList
     private boolean speedSwitchedX = false;
     private boolean speedSwitchedY = false;
 
-    private final int passScore = 100;
+    //private final int passScore = 100;
     private int score;
+    private boolean speedAdjusted = false;
 
     private String scoreStr;
     private String speedStr;
@@ -108,15 +109,15 @@ public class SwipeView extends SurfaceView implements Runnable, View.OnClickList
         obHeight = obstacles[0].getHeight();
         obstacles[0].setPosition( (int)(getScreenWidth()), ran.nextInt(getScreenHeight()-obHeight) );
         obstacles[1].setPosition( (int)(getScreenWidth()), ran.nextInt(getScreenHeight()-obHeight) );
-        mark1 = new Landmark((int)(obstacles[0].getX()+obWidth-1), 1);
+        //mark1 = new Landmark((int)(obstacles[0].getX()+obWidth-1), 1);
 
         obstacles[2].setPosition( (int)(getScreenWidth()+obWidth*2), ran.nextInt(getScreenHeight()-obHeight) );
         obstacles[3].setPosition( (int)(getScreenWidth()+obWidth*2), ran.nextInt(getScreenHeight()-obHeight) );
-        mark2 = new Landmark((int)(obstacles[2].getX()+obWidth-1), 1);
+        //mark2 = new Landmark((int)(obstacles[2].getX()+obWidth-1), 1);
 
         obstacles[4].setPosition( (int)(getScreenWidth()+obWidth*4), ran.nextInt(getScreenHeight()-obHeight) );
         obstacles[5].setPosition( (int)(getScreenWidth()+obWidth*4), ran.nextInt(getScreenHeight()-obHeight) );
-        mark3 = new Landmark((int)(obstacles[4].getX()+obWidth-1), 1);
+        //mark3 = new Landmark((int)(obstacles[4].getX()+obWidth-1), 1);
 
         surfaceHolder = getHolder();
         paint = new Paint();
@@ -188,19 +189,19 @@ public class SwipeView extends SurfaceView implements Runnable, View.OnClickList
         if (obstacles[0].getX() <= -obWidth) {
             obstacles[0].setPosition( (int)(obstacles[4].getX()+obWidth*2), ran.nextInt(getScreenHeight()-obHeight) );
             obstacles[1].setPosition( (int)(obstacles[5].getX()+obWidth*2), ran.nextInt(getScreenHeight()-obHeight) );
-            passed[0] = false;
+            //passed[0] = false;
             System.out.println("first moved");
         }
         else if (obstacles[2].getX() <= -obWidth) {
             obstacles[2].setPosition( (int)(obstacles[0].getX()+obWidth*2), ran.nextInt(getScreenHeight()-obHeight) );
             obstacles[3].setPosition( (int)(obstacles[1].getX()+obWidth*2), ran.nextInt(getScreenHeight()-obHeight) );
-            passed[1] = false;
+            //passed[1] = false;
             System.out.println("second moved");
         }
         else if (obstacles[4].getX() <= -obWidth) {
             obstacles[4].setPosition( (int)(obstacles[2].getX()+obWidth*2), ran.nextInt(getScreenHeight()-obHeight) );
             obstacles[5].setPosition( (int)(obstacles[3].getX()+obWidth*2), ran.nextInt(getScreenHeight()-obHeight) );
-            passed[2] = false;
+            //passed[2] = false;
             System.out.println("third moved");
         }
         //checking player/obstacle collision
@@ -214,11 +215,11 @@ public class SwipeView extends SurfaceView implements Runnable, View.OnClickList
             obstacle.update();
         }
         //updating landmark positions
-        mark1.update((int)(obstacles[0].getX()+obWidth-1), 1);
-        mark2.update((int)(obstacles[2].getX()+obWidth-1), 1);
-        mark3.update((int)(obstacles[4].getX()+obWidth-1), 1);
+        //mark1.update((int)(obstacles[0].getX()+obWidth-1), 1);
+        //mark2.update((int)(obstacles[2].getX()+obWidth-1), 1);
+        //mark3.update((int)(obstacles[4].getX()+obWidth-1), 1);
         //checking landmark collisions
-        if (Rect.intersects(player.getHitbox(), mark1.getRect()) & !passed[0]) {
+        /*if (Rect.intersects(player.getHitbox(), mark1.getRect()) & !passed[0]) {
             passed[0] = true;
             score += passScore;
         }
@@ -233,7 +234,9 @@ public class SwipeView extends SurfaceView implements Runnable, View.OnClickList
             score += passScore;
         }
         //else if (!Rect.intersects(player.getHitbox(), mark3.getRect())) passed[2] = false;
-        //end
+        //end*/
+
+        score++;
 
         //handling swipes
         if (swipeUp & !paused) {
@@ -270,6 +273,18 @@ public class SwipeView extends SurfaceView implements Runnable, View.OnClickList
         }
         //end
 
+        //INCREASING SPEED AND GRAVITY BASED ON SCORE
+        if (score != 0 && score % 500 == 0 && !speedAdjusted) {
+            speedAdjusted = true;
+            for (ObstacleRect obstacle : obstacles) {
+                obstacle.setSpeedX(obstacle.getSpeedX() + 1);
+            }
+            //player.setGravity(player.getGravity() + 0.06);
+        }
+        else if (score % 500 != 0 & speedAdjusted) {
+            speedAdjusted = false;
+        }
+        //END
     }
 
     //draw function

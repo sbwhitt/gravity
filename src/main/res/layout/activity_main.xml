@@ -7,6 +7,18 @@
     android:background="@color/black"
     tools:context=".MainActivity">
 
+    <!--<ImageView
+        android:id="@+id/background_one"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/background_one"/>
+
+    <ImageView
+        android:id="@+id/background_two"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/background_one"/>-->
+
     <TextView
         android:id="@+id/highScoreText"
         android:layout_width="wrap_content"

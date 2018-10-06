@@ -1,13 +1,19 @@
 package com.example.sbw98.gravity;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.LinearInterpolator;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -49,6 +55,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        /*//SCROLLING
+        int screenWidth = getScreenWidth();
+        int screenHeight = getScreenHeight();
+        Bitmap bg = BitmapFactory.decodeResource(context.getResources(), R.drawable.background_one);
+        Bitmap.createScaledBitmap(bg, screenWidth, screenHeight+128, false);
+
+        final ImageView backgroundOne = (ImageView) findViewById(R.id.background_one);
+        backgroundOne.setImageBitmap(bg);
+        final ImageView backgroundTwo = (ImageView) findViewById(R.id.background_two);
+        backgroundTwo.setImageBitmap(bg);
+
+        final ValueAnimator animator = ValueAnimator.ofFloat(0.0f, 1.0f);
+        animator.setRepeatCount(ValueAnimator.INFINITE);
+        animator.setInterpolator(new LinearInterpolator());
+        animator.setDuration(10000L);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                final float progress = (float) animation.getAnimatedValue();
+                final float height = backgroundOne.getHeight();
+                final float translationY = height * progress;
+                backgroundOne.setY(translationY);
+                backgroundTwo.setY(translationY - height);
+            }
+        });
+        animator.start();*/
 
         if( getIntent().getBooleanExtra("Exit me", false)){
             finish();
@@ -209,5 +242,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         destroyWaves = false;
         extraLife = false;
         powerText.setText(powerStr);
+    }
+
+    public static int getScreenWidth() {
+        return Resources.getSystem().getDisplayMetrics().widthPixels;
+    }
+
+    public static int getScreenHeight() {
+        return Resources.getSystem().getDisplayMetrics().heightPixels;
     }
 }
